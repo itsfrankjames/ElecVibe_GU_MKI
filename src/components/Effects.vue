@@ -1,12 +1,11 @@
 <template>
-    <div class='filter'>
-        <h2>Filter</h2>
+    <div class='effects'>
+        <h2>Effects</h2>
         <div class="dials">
         <Knob v-for="dial in controls" :key="dial.id" :label="dial.name" :id="dial.id" :startPos="dial.value" color='#FA9C34'></Knob>
         </div>
-        <div class='waveformTogglers'>
-        <Toggle :options="filterType" control='Type'></Toggle>
-        <Toggle :options="filterRolloff" control='Rolloff Gain'></Toggle>
+        <div class='effectToggler'>
+        <Toggle :options="effectType" control='Type Select'></Toggle>
         </div>
     </div>
 </template>
@@ -21,47 +20,30 @@ export default {
       return {
           controls: [ {
               value: -132,
-              name: 'Frequency',
+              name: 'Depth',
               id: 0,
           },
           {
               value: 0,
-              name: 'Q',
+              name: 'Time',
               id: 1,
           },
           ],
-          filterType: [
+          effectType: [
             {
-            label: 'Lowpass',
+            label: 'Phaser',
             active: true,
             id: 'lowpass',
             },
             {
-            label: 'Highpass',
+            label: 'Delay',
             active: false,
             id: 'highpass',
             },
                    {
-            label: 'Bandpass',
+            label: 'Reverb',
             active: false,
             id: 'bandpass',
-            }
-          ],
-          filterRolloff: [
-            {
-            label: '-12db',
-            active: true,
-            id: 'roll-12',
-            },
-            {
-            label: '-24db',
-            active: false,
-            id: 'roll-24',
-            },
-                   {
-            label: '-48db',
-            active: false,
-            id: 'roll-48',
             }
           ],
       }
@@ -78,11 +60,10 @@ export default {
 </script>
 
 <style scoped>
-.filter {
+.effects {
     padding: 20px;
     width: 520px;
     color: aliceblue;
-    border-bottom: solid #fff 2px;
     border-left: solid #fff 2px;
 }
 
@@ -96,7 +77,7 @@ h2 {
     width: 520px;
 }
 
-.waveformTogglers {
+.effectToggler {
     display: flex;
     justify-content: start;
 }

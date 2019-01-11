@@ -64,8 +64,6 @@ export default {
     padding: 20px;
     width: 200px;
     color: aliceblue;
-    border: solid #fff 2px;
-    border-radius: 2px;
 }
 
 h2 {

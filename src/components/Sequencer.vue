@@ -18,13 +18,13 @@ import Tone from '../../node_modules/tone';
 export default {
   name: 'Sequencer',
   props: {
+      synth: Tone.DuoSynth,
   },
   data() {
       return {
           steps: [],
           notes: ['A4', 'A#4', 'B4', 'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4'],
           index: 0,
-          synth: new Tone.Synth().toMaster(),
       }
   },
   methods: {

@@ -1,12 +1,14 @@
 <template>
   <div id="app">
-    <Sequencer/>
+    <Sequencer :synth='synth'/>
     <div class="synth">
       <div class="osc">
         <Oscillator/>
+        <Amp/>
       </div>
       <div class="amp+filter">
-        <Amp/>
+        <SFilter />
+        <Effects />
       </div>
     </div>
   </div>
@@ -15,14 +17,26 @@
 <script>
 import Sequencer from "./components/Sequencer.vue";
 import Oscillator from "./components/Oscillator.vue";
+import SFilter from './components/Filter';
 import Amp from "./components/Amp";
+import Effects from './components/Effects';
 
 export default {
   name: "app",
   components: {
     Sequencer,
     Oscillator,
+    SFilter,
+    Effects,
     Amp
+  },
+  data() {
+    return {
+      synth: this.$store.state.synth1.toneObject,
+    }
+  },
+  methods: {
+    
   }
 };
 </script>
@@ -47,6 +61,8 @@ body {
   margin: auto;
   max-width: 1124px;
   display: flex;
+  border: solid #fff 2px;
+  border-radius: 2px;
 }
 
 </style>

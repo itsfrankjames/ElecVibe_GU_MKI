@@ -38,6 +38,7 @@ export default {
       id: Number,
       color: String,
       startPos: Number,
+      onRelease: Function,
     },
     data() {
         return {
@@ -52,7 +53,11 @@ export default {
     methods: {
         unselectKnob(event) {
             event.preventDefault();
-            this.knob.selected = false;
+            if(this.knob.selected) {
+              this.knob.selected = false;
+              this.onRelease(this.knob.rotation);
+            }
+
         },
         knobSelected(event) {
             event.preventDefault();
