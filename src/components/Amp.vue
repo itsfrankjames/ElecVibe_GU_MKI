@@ -2,9 +2,10 @@
     <div class='amp'>
         <h2>Amp</h2>
         <div class="dials">
-         <Knob :label="distortion.name" :id="distortion.id" :startPos="distortion.value" color='#FA9C34'></Knob>
+         <Knob v-if="distortion.active" :label="distortion.name" :id="distortion.id" :startPos="distortion.startPos" color='#FA9C34'></Knob>
+         <Knob v-if="bitcrush.active" :label="bitcrush.name" :id="bitcrush.id" :startPos="bitcrush.startPos" color='#FA9C34'></Knob>
         </div>
-        <Toggler :options="togglerOptions" />
+        <Toggler :options="togglerOptions" :onToggle='toggleFx'/>
     </div>
 </template>
 
@@ -19,14 +20,14 @@ export default {
           distortion: {
               id: 0,
               name: 'distortion',
-              startPos: 0,
+              startPos: -132,
               active: true,
 
           },
           bitcrush: {
               id: 1,
               name: 'bitcrusher',
-              startPos: 0,
+              startPos: -132,
               active: false,
           },
           togglerOptions: [{
@@ -48,6 +49,10 @@ export default {
       Toggler,
   },
   methods: {
+      toggleFx() {
+          this.distortion.active = !this.distortion.active;
+          this.bitcrush.active = !this.bitcrush.active;
+      }
 
   }
 

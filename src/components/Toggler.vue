@@ -21,6 +21,7 @@ export default {
   props: {
       control: String,
       options: Array, 
+      onToggle: Function,
   },
   data() {
       return{
@@ -41,6 +42,7 @@ export default {
                   }
               }
           }
+          this.onToggle();
       }
   }
 
