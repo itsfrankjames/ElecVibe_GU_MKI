@@ -5,7 +5,7 @@
         <button v-on:click="incrementNote(step.id)" class='up-note'>+</button>
         <p class='note'>{{getNote(step.note)}}<p/>
          <button v-on:click="decramentNote(step.id)" class='down-note'>-</button>
-        <input v-bind:id="stepId(step.id)" class='step-button' type="checkbox" checked>
+        <input v-bind:id="stepId(step.id)" class='step-button' type="checkbox" v-on:click='toggleStep(step.id)'>
     </div>
     </div>
     <button id="start" v-on:click="start()">Start</button>
@@ -35,6 +35,7 @@ export default {
           return {
               id: id,
               note: id%12,
+              active: false,
           }
       },
       getNote(key){
@@ -48,6 +49,23 @@ export default {
           let current = this.steps[id-1].note;
           this.steps[id-1].note = current-1 >= 0 ? current-1 : this.notes.length-1; 
       },
+      toggleStep(id){
+          this.steps[id-1].active = !this.steps[id-1].active;
+      },
+      sequence(time) {
+            let step = this.index % 16;
+            let note = this.notes[this.steps[step].note];
+            if(this.steps[step].active) {
+                this.synth.triggerAttackRelease(note, '16n');
+            }
+            this.index++;
+        },
+        stop() {
+            Tone.Transport.stop();
+        },
+        start() {
+            Tone.Transport.start();
+        }
 
   },
   created() {
@@ -58,16 +76,8 @@ export default {
       
   },
   mounted() {
-        Tone.Transport.scheduleRepeat(function(time) {
-            let step = this.index % 16;
-            let note = this.notes[this.steps[step].note];
-            let step_input = document.getElementById(`step-${step+1}`);
-            if(step_input.attributes.checked) {
-                console.log('triggered');
-                this.synth.triggerAttackRelease(note, time);
-            }
-            this.index++;
-        }, '16n');
+
+        Tone.Transport.scheduleRepeat(this.sequence, '16n');
   }
 }
 </script>
