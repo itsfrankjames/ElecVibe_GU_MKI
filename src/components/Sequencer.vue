@@ -52,7 +52,7 @@ export default {
       toggleStep(id){
           this.steps[id-1].active = !this.steps[id-1].active;
       },
-      sequence(time) {
+      sequence() {
             let step = this.index % 16;
             let note = this.notes[this.steps[step].note];
             if(this.steps[step].active) {
@@ -88,6 +88,12 @@ export default {
     display: flex;
     justify-content: center;
     flex-direction: row;
+    width: 1080px;
+    border: #fff solid 2px;
+    border-radius: 2px;
+    padding: 20px;
+    margin: auto;
+
 }
 
 .step-container {
@@ -95,6 +101,8 @@ export default {
     margin: 6px;
     border-radius: 4px;
     background-color: grey;
+    display: flex;
+    flex-direction: column;
 }
 
 .step-container p {
@@ -108,6 +116,7 @@ export default {
     padding: 0px;
     border-radius: 2px;
     align-self: auto;
+    margin: auto;
 }
 
 .step-container input {

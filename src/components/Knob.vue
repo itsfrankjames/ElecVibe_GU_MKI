@@ -1,13 +1,13 @@
 <template>
   <div class="rela-block container">
     <!-- Knobs -->
-    <div :class="['rela-inline', 'knob', 'style'+knob.style]">
+    <div :class="['rela-inline', 'knob', 'style']">
       <div
         class="knob-active-light"
-        :style="{'background-color': knob.active?knob.color:'#888'}"
+        :style="{'background-color': knob.active?color:'#888'}"
         @click="knob.active = !knob.active"
       ></div>
-      <div class="rela-block knob-dial" :style="{'color':knob.active?knob.color:'#888'}">
+      <div class="rela-block knob-dial" :style="{'color':knob.active?color:'#888'}">
         <div
           class="abs-center dial-grip"
           :style="{'transform': 'translate(-50%,-50%) rotate('+knob.rotation+'deg)'}"
@@ -18,7 +18,7 @@
           <path
             d="M20,76 A 40 40 0 1 1 80 76"
             fill="none"
-            :stroke="knob.active?knob.color:'#888'"
+            :stroke="knob.active?color:'#888'"
             :style="{'stroke-dashoffset':184 - 184*((knob.rotation*1 + 132)/264)}"
           ></path>
         </svg>
@@ -26,23 +26,25 @@
       <div
         class="rela-block knob-label"
         :style="{'color':knob.active?'#E4E8EA':'#888'}"
-      >{{knob.label}}</div>
+      >{{label}}</div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
+    props: {
+      label: String,
+      id: Number,
+      color: String,
+      startPos: Number,
+    },
     data() {
         return {
         knob: {
-                id: 0,
-                label: 'Test Knob',
-                rotation: -132,
-                color: '#FA9C34',
+                rotation: 0,
                 active: true,
                 selected: false,
-                style: 1
         },
         currentY: 0,
         }
@@ -73,10 +75,13 @@ export default {
             }
       },
     },
+    created() {
+      this.knob.rotation = this.startPos;
+    },
     mounted(){
         window.addEventListener('mousemove', this.mousemoveFunction);
         window.addEventListener('mouseup', this.unselectKnob);
-    }
+    },
 }
 </script>
 
@@ -137,7 +142,6 @@ body {
   font-size: 16px;
 }
 .container {
-  margin: 20px auto;
   max-width: 700px;
   text-align: center;
 }
@@ -184,12 +188,12 @@ body {
   background-color: #2c2d2f;
   margin: 0 10px 10px 0;
 }
-.knob.style1 .dial-grip {
+.knob.style .dial-grip {
   height: 72px;
   width: 72px;
   border: 6px solid #181b1c;
 }
-.knob.style1 .dial-grip::after {
+.knob.style .dial-grip::after {
   position: absolute;
   top: 5px;
   left: 50%;
@@ -197,33 +201,6 @@ body {
   bottom: ;
   height: 10px;
   background-color: #e4e8ea;
-}
-.knob.style2 .dial-svg {
-  stroke-width: 2.5;
-}
-.knob.style2 .dial-grip {
-  height: 60px;
-  width: 60px;
-  background-color: #888;
-}
-.knob.style2 .dial-grip::after {
-  height: 15px;
-  background-color: #2c2d2f;
-}
-.knob.style3 .dial-svg {
-  stroke-width: 2.75;
-}
-.knob.style3 .dial-grip {
-  z-index: 5;
-  height: 82px;
-  width: 82px;
-  transition: 0.3s cubic-bezier(0, 0, 0.24, 1);
-}
-.knob.style3 .dial-grip::after {
-  height: 25px;
-  width: 3px;
-  border-radius: 4px;
-  background-color: currentColor;
 }
 .knob-active-light {
   position: absolute;
