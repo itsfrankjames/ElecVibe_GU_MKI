@@ -1,16 +1,19 @@
 <template>
   <div id="app">
     <Sequencer/>
+    <Knob/>
   </div>
 </template>
 
 <script>
 import Sequencer from './components/Sequencer.vue'
+import Knob from './components/Knob.vue';
 
 export default {
   name: 'app',
   components: {
-    Sequencer
+    Sequencer,
+    Knob,
   },
 }
 </script>
