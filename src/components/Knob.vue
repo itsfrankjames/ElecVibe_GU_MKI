@@ -1,12 +1,3 @@
-// --- Notes ---
-// https://mir-s3-cdn-cf.behance.net/project_modules/disp/1dd3e221774089.56307491c7600.png
-// https://www.surrealmachines.com/wp-content/uploads/xmodnetic-laptop.png.pagespeed.ic.EB89gLdCx-.webp
-
-// - To Do -
-// Make components for the knobs
-// Need to make two way knobs
-// - for this i have to figure out how to have the svg break point in the middle of the arc
-
 <template>
   <div class="rela-block container">
     <!-- Knobs -->
@@ -40,13 +31,10 @@
   </div>
 </template>
 
-
-// - Vue Stuff -
 <script>
 export default {
     data() {
         return {
-        colorArray: ['#23CDE8','#23F376','#FFFB43','#FA9C34','#21CD92','#ED31A2','#E22'],
         knob: {
                 id: 0,
                 label: 'Test Knob',
@@ -59,7 +47,6 @@ export default {
         currentY: 0,
         }
     },
-    //computed: {},
     methods: {
         unselectKnob(event) {
             event.preventDefault();
