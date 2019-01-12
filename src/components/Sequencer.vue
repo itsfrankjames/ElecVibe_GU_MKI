@@ -5,7 +5,7 @@
         <button v-on:click="incrementNote(step.id)" class='up-note'>+</button>
         <p class='note'>{{getNote(step.note)}}<p/>
          <button v-on:click="decramentNote(step.id)" class='down-note'>-</button>
-        <input v-bind:id="stepId(step.id)" class='step-button' type="checkbox" v-on:click='toggleStep(step.id)'>
+        <input v-bind:id="stepId(step.id)" class='step-button' type="checkbox" :checked='step.active' v-on:click='toggleStep(step.id)'>
     </div>
     </div>
     <button id="start" v-on:click="start()">Start</button>
@@ -35,7 +35,7 @@ export default {
           return {
               id: id,
               note: id%12,
-              active: false,
+              active: id % 2 == 0 ? true : false,
           }
       },
       getNote(key){

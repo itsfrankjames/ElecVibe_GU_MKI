@@ -30,15 +30,15 @@ export default {
       controls: [
         {
           value: -132,
-          name: "Pornamento",
+          name: "Portamento",
           id: 0,
           update: value => {
             //value 0 - 264;
             value += 132;
             this.$store.commit({
-                type: 'setPornamento',
+                type: 'setPortamento',
                 synth: 1,
-                amount: Math.round(((3 / 264) * value) * 100) / 100,
+                amount: Math.round(((10 / 264) * value) * 100) / 100,
             });
           }
         },
@@ -47,10 +47,19 @@ export default {
           name: "OSC Balance",
           id: 1,
           update: value => {
+
+            // $$y = -40 - (-0.37453/0.00832)\cdot(1 - e^{(-0.00832 \cdot x)})$$
+            value += 132;
+            let exponent1 = -0.00832282 * ((value * -1) + 264);
+            let exponent2 = -0.00832282 * value;
+            let gainOSC1 = -40 - (-45 * (1 - Math.pow(Math.E, exponent1)));
+            let gainOSC2 = -40 - (-45 * (1 - Math.pow(Math.E, exponent2)));
+            // console.log(gain);
             this.$store.commit({
                 type: 'setOscBalance',
                 synth: 1,
-                amount: Math.round(((40 / 264) * value) * 100) / 100,
+                osc1: gainOSC1,
+                osc2: gainOSC2,
             })
           },
         },
@@ -59,7 +68,23 @@ export default {
           name: "OSC2 Offset",
           id: 2,
           update: value => {
-            this.$store.commit('');
+            value += 132;
+            //  Harmocity(OSC offset) is mapped (0.5 == -1 octave ~ 2 == +1 Octave)
+            //  Below is the quadratic regression mapping the dial value to harmocity.
+            //  The equations where chosen so that the top 50% of the dial give fine grain control over the inital 1 tone degree of offset.
+            //  I chose this as most sounds aren't looking for radical pitch shifts.
+            //  y = 0.5 + 0.007954545*x - 0.0000162611*x^2 - 2.608732e-7 *x^3 + 1.097951e-9 *x^4
+            // ALTERNATIVE y = 0.5 + 0.005934343*x + 0.000006695745*x^2 - 3.18845e-7*x^3 + 1.097951e-9*x^4
+            
+            const bexp3 = 2.608732 * Math.pow(10, -7);
+            const bexp4 = 1.097951 * Math.pow(10, -9);
+            const harmocity = 0.5 + (0.007954545  * value) - (0.0000162611 * Math.pow(value, 2)) - (bexp3 * Math.pow(value, 3)) + (bexp4 * Math.pow(value, 4));
+
+            this.$store.commit({
+              type: 'setOSC2Offset',
+              synth: 1, 
+              harmocity,
+            });
           }
         }
       ],
