@@ -172,6 +172,11 @@ const store = new Vuex.Store({
             state.synth1.filter.frequency = payload.frequency;
             state.synth1.filterObject.frequency.value = state.synth1.filter.frequency;
         },
+        setFilterQ(state, payload) {
+            state.synth1.filter.Q = payload.Q;
+            state.synth1.filterObject.Q.value = state.synth1.filter.Q;
+
+        }
     },
     actions: Actions,
 });
