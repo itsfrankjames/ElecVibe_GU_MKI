@@ -41,7 +41,7 @@ const store = new Vuex.Store({
                     active: true,
                 },
                 bitcrusher: {
-                    level: 0,
+                    bits: 0,
                     active: false,
                 },
                 phaser: {
@@ -199,6 +199,20 @@ const store = new Vuex.Store({
             state.synth1.effects.bitcrusher.active = false;
             state.synth1.bitcrusherObject.wet.value = 0;
         },
+        setBitcrusherLevel(state, payload) {
+            state.synth1.effects.bitcrusher.bits = payload.bits;
+            // Bitcrush has no 0 bit value so allow the silent toggling off of the effect if dial value is 0.
+            if(state.synth1.effects.bitcrusher.bits === 0 && state.synth1.effects.bitcrusher.active) {
+                state.synth1.bitcrusherObject.wet.value = 0;    
+            } else {
+                state.synth1.bitcrusherObject.wet.value = 1;
+                state.synth1.bitcrusherObject.bits = state.synth1.effects.bitcrusher.bits;
+            }
+        },
+        setDistortionLevel(state, payload) {
+            state.synth1.effects.distortion.level = payload.level;
+            state.synth1.distortionObject.distortion = payload.level;
+        }
 
     },
     actions: Actions,
