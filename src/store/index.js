@@ -14,6 +14,8 @@ const store = new Vuex.Store({
     state: {
         synth1: {
             filterObject: new Tone.Filter(1000, "lowpass"),
+            bitcrusherObject: new Tone.BitCrusher(4),
+            distortionObject: new Tone.Distortion(0),
             toneObject: new Tone.DuoSynth(),
             osc1: {
                 type: 'sine',
@@ -38,7 +40,7 @@ const store = new Vuex.Store({
                     level: 0,
                     active: true,
                 },
-                bitcruch: {
+                bitcrusher: {
                     level: 0,
                     active: false,
                 },
@@ -58,6 +60,7 @@ const store = new Vuex.Store({
         }
     },
     mutations: {
+        // OSC MUTATORS
         toggleOsc1Wave(state) {
             switch (state.synth1.osc1.type) {
                 case 'sawtooth':
@@ -135,6 +138,7 @@ const store = new Vuex.Store({
             }
             state.synth1.toneObject.harmonicity.value = state.synth1.oscOffest;
         },
+        // FILTER MUTATORS
         toggleFilterType(state){
             // refactor for dual synth use.
             switch (state.synth1.filter.type) {
@@ -173,10 +177,29 @@ const store = new Vuex.Store({
             state.synth1.filterObject.frequency.value = state.synth1.filter.frequency;
         },
         setFilterQ(state, payload) {
+            // refactor for dual synth use.
             state.synth1.filter.Q = payload.Q;
             state.synth1.filterObject.Q.value = state.synth1.filter.Q;
 
-        }
+        },
+        // AMP MUTATORS
+        setDistortionActive(state) {
+            state.synth1.effects.distortion.active = true;
+            state.synth1.distortionObject.wet = 1;
+        },
+        setBitcrusherActive(state) {
+            state.synth1.effects.bitcrusher.active = true;
+            state.synth1.bitcrusherObject.wet.value = 1;
+        },
+        setDistortionInactive(state) {
+            state.synth1.effects.distortion.active = false;
+            state.synth1.distortionObject.wet = 0;
+        },
+        setBitcrusherInactive(state) {
+            state.synth1.effects.bitcrusher.active = false;
+            state.synth1.bitcrusherObject.wet.value = 0;
+        },
+
     },
     actions: Actions,
 });

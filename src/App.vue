@@ -35,13 +35,19 @@ export default {
     return {
       synth: this.$store.state.synth1.toneObject,
       filter: this.$store.state.synth1.filterObject,
+      effects: {
+        distortion: this.$store.state.synth1.distortionObject,
+        bitcrusher: this.$store.state.synth1.bitcrusherObject,
+      }
     }
   },
   methods: {
     
   },
   created() {
-    this.synth.chain(this.filter, Tone.Master);
+    this.synth.chain(this.filter, this.effects.distortion, this.effects.bitcrusher, Tone.Master);
+    this.$store.commit('setBitcrusherInactive');
+    // this.$store.commit('setBitcrushInactive');
   }
   
 };

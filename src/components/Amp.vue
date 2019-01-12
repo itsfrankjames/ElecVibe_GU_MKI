@@ -52,7 +52,15 @@ export default {
       toggleFx() {
           this.distortion.active = !this.distortion.active;
           this.bitcrush.active = !this.bitcrush.active;
+          if(this.distortion.active) {
+              this.$store.commit('setDistortionActive');
+              this.$store.commit('setBitcrusherInactive');
+          } else {
+              this.$store.commit('setDistortionInactive');
+              this.$store.commit('setBitcrusherActive');
+          }
       }
+
 
   }
 
