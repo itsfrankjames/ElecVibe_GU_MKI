@@ -2,11 +2,11 @@
     <div class='filter'>
         <h2>Filter</h2>
         <div class="dials">
-        <Knob v-for="dial in controls" :key="dial.id" :label="dial.name" :id="dial.id" :startPos="dial.value" color='#FA9C34'></Knob>
+        <Knob v-for="dial in controls" :key="dial.id" :label="dial.name" :id="dial.id" :startPos="dial.value" :onRelease='setFrequency' color='#FA9C34'></Knob>
         </div>
         <div class='waveformTogglers'>
-        <Toggle :options="filterType" control='Type'></Toggle>
-        <Toggle :options="filterRolloff" control='Rolloff Gain'></Toggle>
+        <Toggle :options="filterType" control='Type' :onToggle='toggleFilterType'></Toggle>
+        <Toggle :options="filterRolloff" control='Rolloff Gain' :onToggle='toggleFilterRolloff'></Toggle>
         </div>
     </div>
 </template>
@@ -71,7 +71,31 @@ export default {
       Toggle
   },
   methods: {
+      toggleFilterType() {
+          this.$store.commit({
+              type: 'toggleFilterType',
+          });
+      },
+      toggleFilterRolloff() {
+            this.$store.commit({
+              type: 'toggleFilterRolloff',
+          });
+      },
+      setFrequency(value) {
+          // Maps the dial turn value to a log function 
+          // gives better control of the exponential nature of the frequency perception.
+          value += 132;
+          const y = Math.pow(1+value, 2) / Math.pow(1+265, 2);
+          
+          // 20hz ~ 12000hz is the bounds of the filter.
+          const f = (y * 12000) + 20; 
 
+          this.$store.commit({
+              type: 'setFilterFrequency',
+              synth: 1,
+              frequency: f,
+          });
+      }
   }
 
 }

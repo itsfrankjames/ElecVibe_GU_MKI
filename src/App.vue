@@ -15,6 +15,7 @@
 </template>
 
 <script>
+import Tone from '../node_modules/tone';
 import Sequencer from "./components/Sequencer.vue";
 import Oscillator from "./components/Oscillator.vue";
 import SFilter from './components/Filter';
@@ -33,11 +34,16 @@ export default {
   data() {
     return {
       synth: this.$store.state.synth1.toneObject,
+      filter: this.$store.state.synth1.filterObject,
     }
   },
   methods: {
     
+  },
+  created() {
+    this.synth.chain(this.filter, Tone.Master);
   }
+  
 };
 </script>
 

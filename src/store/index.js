@@ -8,10 +8,13 @@ Vue.use(Vuex)
 
 
 const store = new Vuex.Store({
+    // Refactor init synths into new file ...spread to syunth objects and
+    // use properties to init Tone Objects.
+    // Get Components to init view from store properties so synth and view are in sync.
     state: {
         synth1: {
-            filterObject: new Tone.Filter(20000, "lowpass"),
-            toneObject: new Tone.DuoSynth().chain(this.filterObject).toMaster(),
+            filterObject: new Tone.Filter(1000, "lowpass"),
+            toneObject: new Tone.DuoSynth(),
             osc1: {
                 type: 'sine',
                 portamento: 0,
@@ -28,6 +31,7 @@ const store = new Vuex.Store({
                 type: 'lowpass',
                 frequency: 0,
                 Q: 0,
+                rolloff: -12,
             },
             effects: {
                 distortion: {
@@ -88,8 +92,6 @@ const store = new Vuex.Store({
 
             switch(payload.synth){
                 case 1:
-                    console.log('case1');
-                    console.log(payload.amount);
                     state.synth1.toneObject.voice0.portamento.value = payload.amount;
                     state.synth1.toneObject.voice1.portamento.value = payload.amount;
                     break;
@@ -98,7 +100,6 @@ const store = new Vuex.Store({
                     state.synth2.toneObject.voice1.portamento = payload.amount;
                     break;
             }
-            console.log(state.synth1.toneObject.voice1.portamento);
         },
         setOscBalance(state, payload) {
 
@@ -132,7 +133,6 @@ const store = new Vuex.Store({
                     state.synth2.oscOffest = payload.harmocity;
                     break;
             }
-            console.log(state.synth1.oscOffest);
             state.synth1.toneObject.harmonicity.value = state.synth1.oscOffest;
         },
         toggleFilterType(state){
@@ -150,8 +150,28 @@ const store = new Vuex.Store({
             }
             state.synth1.filterObject.type = state.synth1.filter.type;
 
-        }
-        
+        },
+        toggleFilterRolloff(state) {
+            // refactor for dual synth use.
+            switch (state.synth1.filter.rolloff) {
+                //-12, -24, -48 and -96
+                case -12:
+                    state.synth1.filter.rolloff = -24;
+                    break;
+                case -24:
+                    state.synth1.filter.rolloff = -48;
+                    break;
+                case -48:
+                    state.synth1.filter.rolloff = -12
+                    break;
+            }
+            state.synth1.filterObject.rolloff = state.synth1.filter.rolloff;
+        },
+        setFilterFrequency(state, payload) {
+            // refactor for dual synth use.
+            state.synth1.filter.frequency = payload.frequency;
+            state.synth1.filterObject.frequency.value = state.synth1.filter.frequency;
+        },
     },
     actions: Actions,
 });

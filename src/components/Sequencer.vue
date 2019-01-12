@@ -23,8 +23,8 @@ export default {
   data() {
       return {
           steps: [],
-          notes: ['A4', 'A#4', 'B4', 'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4'],
-          index: 0,
+          notes: ['B3', 'F#4', 'B3', 'F#4', 'B3', 'F#4', 'B3', 'A3', 'D3', 'F#4', 'D3', 'F#4'],
+          index: 0, 
       }
   },
   methods: {
@@ -35,7 +35,8 @@ export default {
           return {
               id: id,
               note: id%12,
-              active: id % 2 == 0 ? true : false,
+            //   active: id % 2 == 0 ? true : false,
+              active: true,
           }
       },
       getNote(key){

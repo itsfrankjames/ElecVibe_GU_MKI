@@ -54,7 +54,6 @@ export default {
             let exponent2 = -0.00832282 * value;
             let gainOSC1 = -40 - (-45 * (1 - Math.pow(Math.E, exponent1)));
             let gainOSC2 = -40 - (-45 * (1 - Math.pow(Math.E, exponent2)));
-            // console.log(gain);
             this.$store.commit({
                 type: 'setOscBalance',
                 synth: 1,
@@ -75,7 +74,7 @@ export default {
             //  I chose this as most sounds aren't looking for radical pitch shifts.
             //  y = 0.5 + 0.007954545*x - 0.0000162611*x^2 - 2.608732e-7 *x^3 + 1.097951e-9 *x^4
             // ALTERNATIVE y = 0.5 + 0.005934343*x + 0.000006695745*x^2 - 3.18845e-7*x^3 + 1.097951e-9*x^4
-            
+
             const bexp3 = 2.608732 * Math.pow(10, -7);
             const bexp4 = 1.097951 * Math.pow(10, -9);
             const harmocity = 0.5 + (0.007954545  * value) - (0.0000162611 * Math.pow(value, 2)) - (bexp3 * Math.pow(value, 3)) + (bexp4 * Math.pow(value, 4));
@@ -130,11 +129,9 @@ export default {
   },
   methods: {
     toggleOsc1() {
-      console.log("toggleOsc1Wave");
       this.$store.commit("toggleOsc1Wave");
     },
     toggleOsc2() {
-      console.log("toggleOsc2Wave");
       this.$store.commit("toggleOsc2Wave");
     }
   }
