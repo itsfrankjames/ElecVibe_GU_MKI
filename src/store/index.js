@@ -10,7 +10,8 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     state: {
         synth1: {
-            toneObject: new Tone.DuoSynth(),
+            filterObject: new Tone.Filter(20000, "lowpass"),
+            toneObject: new Tone.DuoSynth().chain(this.filterObject).toMaster(),
             osc1: {
                 type: 'sine',
                 portamento: 0,
@@ -122,9 +123,7 @@ const store = new Vuex.Store({
             // console.log(`OSC2 Gain is ${state.synth1.toneObject.voice1.volume.value}db`);
         },
         setOSC2Offset(state, payload) {
-            // Equation for the curve mapping dial value to harmocity:
-            // hamocity = 0.5 + 0.001893939 * dialV + 0.00001434803 * dialV^2
-            // y = 0.5 + 0.007954545 * x - 0.0000162611 * x^2 - 2.608732e-7 * x^3 + 1.097951e-9 * x^4
+            // for the equation for the curve mapping dial value to harmocity see the Oscillator vue.
             switch(payload.synth){
                 case 1:
                     state.synth1.oscOffest = payload.harmocity;
@@ -135,6 +134,22 @@ const store = new Vuex.Store({
             }
             console.log(state.synth1.oscOffest);
             state.synth1.toneObject.harmonicity.value = state.synth1.oscOffest;
+        },
+        toggleFilterType(state){
+            // refactor for dual synth use.
+            switch (state.synth1.filter.type) {
+                case 'lowpass':
+                    state.synth1.filter.type = 'highpass';
+                    break;
+                case 'highpass':
+                    state.synth1.filter.type = 'bandpass';
+                    break;
+                case 'bandpass':
+                    state.synth1.filter.type = 'lowpass'
+                    break;
+            }
+            state.synth1.filterObject.type = state.synth1.filter.type;
+
         }
         
     },

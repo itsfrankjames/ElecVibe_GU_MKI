@@ -2,7 +2,6 @@ import store from './index';
 
 const Mutations = {
     toggleOsc1Wave() {
-        console.log('mutations - osc1');
         switch(store.state.osc1.type) {
             case 'saw':
                 store.state.osc1.type = 'sine';
@@ -16,7 +15,6 @@ const Mutations = {
         }
     },
     toggleOsc2Wave() {
-        console.log('mutations - osc2');
         switch(store.state.osc2.type) {
             case 'saw':
                 store.state.osc2.type = 'sine';
