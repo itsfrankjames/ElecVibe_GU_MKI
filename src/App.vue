@@ -38,6 +38,9 @@ export default {
       effects: {
         distortion: this.$store.state.synth1.distortionObject,
         bitcrusher: this.$store.state.synth1.bitcrusherObject,
+        phaser: this.$store.state.synth1.phaserObject,
+        delay: this.$store.state.synth1.delayObject,
+        reverb: this.$store.state.synth1.reverbObject,
       }
     }
   },
@@ -45,7 +48,15 @@ export default {
     
   },
   created() {
-    this.synth.chain(this.filter, this.effects.distortion, this.effects.bitcrusher, Tone.Master);
+    this.synth.chain(
+      this.filter, 
+      this.effects.distortion, 
+      this.effects.bitcrusher,
+      this.effects.phaser,
+      this.effects.delay,
+      // this.effects.reverb, 
+      Tone.Master);
+
     this.$store.commit('setBitcrusherInactive');
     // this.$store.commit('setBitcrushInactive');
   }

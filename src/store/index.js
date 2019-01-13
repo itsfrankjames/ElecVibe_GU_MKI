@@ -16,6 +16,9 @@ const store = new Vuex.Store({
             filterObject: new Tone.Filter(1000, "lowpass"),
             bitcrusherObject: new Tone.BitCrusher(4),
             distortionObject: new Tone.Distortion(0),
+            phaserObject: new Tone.Phaser(),
+            delayObject: new Tone.FeedbackDelay(),
+            reverbObject: new Tone.Reverb(),  
             toneObject: new Tone.DuoSynth(),
             osc1: {
                 type: 'sine',
@@ -35,7 +38,7 @@ const store = new Vuex.Store({
                 Q: 0,
                 rolloff: -12,
             },
-            effects: {
+            amp: {
                 distortion: {
                     level: 0,
                     active: true,
@@ -44,6 +47,8 @@ const store = new Vuex.Store({
                     bits: 0,
                     active: false,
                 },
+            },
+            effects: {
                 phaser: {
                     depth: 0,
                     time: 0,
@@ -184,34 +189,54 @@ const store = new Vuex.Store({
         },
         // AMP MUTATORS
         setDistortionActive(state) {
-            state.synth1.effects.distortion.active = true;
+            state.synth1.amp.distortion.active = true;
             state.synth1.distortionObject.wet = 1;
         },
         setBitcrusherActive(state) {
-            state.synth1.effects.bitcrusher.active = true;
+            state.synth1.amp.bitcrusher.active = true;
             state.synth1.bitcrusherObject.wet.value = 1;
         },
         setDistortionInactive(state) {
-            state.synth1.effects.distortion.active = false;
+            state.synth1.amp.distortion.active = false;
             state.synth1.distortionObject.wet = 0;
         },
         setBitcrusherInactive(state) {
-            state.synth1.effects.bitcrusher.active = false;
+            state.synth1.amp.bitcrusher.active = false;
             state.synth1.bitcrusherObject.wet.value = 0;
         },
         setBitcrusherLevel(state, payload) {
-            state.synth1.effects.bitcrusher.bits = payload.bits;
+            state.synth1.amp.bitcrusher.bits = payload.bits;
             // Bitcrush has no 0 bit value so allow the silent toggling off of the effect if dial value is 0.
-            if(state.synth1.effects.bitcrusher.bits === 0 && state.synth1.effects.bitcrusher.active) {
+            if(state.synth1.amp.bitcrusher.bits === 0 && state.synth1.amp.bitcrusher.active) {
                 state.synth1.bitcrusherObject.wet.value = 0;    
             } else {
                 state.synth1.bitcrusherObject.wet.value = 1;
-                state.synth1.bitcrusherObject.bits = state.synth1.effects.bitcrusher.bits;
+                state.synth1.bitcrusherObject.bits = state.synth1.amp.bitcrusher.bits;
             }
         },
+        // SOME ERROR WITH DISTORTION LEVEL ELSE WHERE
+        // DISTORTION REMAINS ACTIVE AND AT SAME LEVEL as BITCRUSHER
+        // TEST
         setDistortionLevel(state, payload) {
-            state.synth1.effects.distortion.level = payload.level;
+            state.synth1.amp.distortion.level = payload.level;
             state.synth1.distortionObject.distortion = payload.level;
+        },
+        // EFFECTS SECTION
+        toggleEffectsType(state, payload) {
+            // refactor for dual synth use.
+            switch (payload.) {
+                //-12, -24, -48 and -96
+                case -12:
+                    state.synth1.filter.rolloff = -24;
+                    break;
+                case -24:
+                    state.synth1.filter.rolloff = -48;
+                    break;
+                case -48:
+                    state.synth1.filter.rolloff = -12
+                    break;
+            }
+            state.synth1.filterObject.rolloff = state.synth1.filter.rolloff;
         }
 
     },
