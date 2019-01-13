@@ -46,22 +46,26 @@ const store = new Vuex.Store({
                 },
             },
             effects: {
+                active: 'phaser',
                 phaser: {
+                    id: 'phaser',
                     depth: 0,
                     time: 0,
-                    active: true,
+                    // active: true,
                     effectObject: new Tone.Phaser(),
                 },
                 delay: {
+                    id: 'delay',
                     depth: 0,
                     time: 0,
-                    active: false,
+                    // active: false,
                     effectObject: new Tone.FeedbackDelay(),
                 },
                 reverb: {
+                    id: 'reverb',
                     depth: 0,
                     time: 0,
-                    active: false,
+                    // active: false,
                     effectObject: new Tone.Freeverb(),  
                 },
             }
@@ -228,17 +232,25 @@ const store = new Vuex.Store({
         // EFFECTS SECTION
         toggleEffectsType(state) {
             // refactor for dual synth use.
-            for(let i = 0; i < state.effectsKeys.length; i++){
-                let key = state.effectsKeys[i];
-                if(state.synth1.effects[key].active) {
-                    state.synth1.effects[key].active = false;
-                    state.synth1.effects[key].effectObject.wet.value = 0;
-                    let newKey = state.effectsKeys[i+1];
-                    state.synth1.effects[newKey].active = true;
-                    state.synth1.effects[key].effectObject.wet.value = 1;
 
-                }
+            switch(state.synth1.effects.active) {
+                case 'phaser':
+                    state.synth1.effects.phaser.effectObject.wet.value = 0;
+                    state.synth1.effects.delay.effectObject.wet.value = 1;
+                    state.synth1.effects.active = 'delay';
+                    break;
+                case 'delay':
+                    state.synth1.effects.delay.effectObject.wet.value = 0;
+                    state.synth1.effects.reverb.effectObject.wet.value = 1;
+                    state.synth1.effects.active = 'reverb';
+                    break;
+                case 'reverb':  
+                    state.synth1.effects.reverb.effectObject.wet.value = 0;
+                    state.synth1.effects.phaser.effectObject.wet.value = 1;
+                    state.synth1.effects.active = 'phaser';
+                    break;
             }
+
         },
         setPhaserInactive(state) {
             state.synth1.effects.phaser.effectObject.wet.value = 0;

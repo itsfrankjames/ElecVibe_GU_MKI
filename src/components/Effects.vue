@@ -5,7 +5,7 @@
         <Knob v-for="dial in controls" :key="dial.id" :label="dial.name" :id="dial.id" :startPos="dial.value" color='#FA9C34'></Knob>
         </div>
         <div class='effectToggler'>
-        <Toggle :options="effectType" control='Type Select'></Toggle>
+        <Toggle :options="effectType" control='Type Select' :onToggle='toggleEffect'></Toggle>
         </div>
     </div>
 </template>
@@ -32,18 +32,18 @@ export default {
           effectType: [
             {
             label: 'Phaser',
-            active: true,
-            id: 'lowpass',
+            active: this.$store.state.synth1.effects.active === 'phaser',
+            id: 'phaser',
             },
             {
             label: 'Delay',
-            active: false,
-            id: 'highpass',
+            active: this.$store.state.synth1.effects.active === 'delay',
+            id: 'delay',
             },
                    {
             label: 'Reverb',
-            active: false,
-            id: 'bandpass',
+            active: this.$store.state.synth1.effects.active === 'reverb',
+            id: 'reverb',
             }
           ],
       }
@@ -53,6 +53,9 @@ export default {
       Toggle
   },
   methods: {
+      toggleEffect(){
+          this.$store.commit('toggleEffectsType');
+      }
 
   }
 
