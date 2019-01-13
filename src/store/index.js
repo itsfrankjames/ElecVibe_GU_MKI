@@ -16,9 +16,6 @@ const store = new Vuex.Store({
             filterObject: new Tone.Filter(1000, "lowpass"),
             bitcrusherObject: new Tone.BitCrusher(4),
             distortionObject: new Tone.Distortion(0),
-            phaserObject: new Tone.Phaser(),
-            delayObject: new Tone.FeedbackDelay(),
-            reverbObject: new Tone.Reverb(),  
             toneObject: new Tone.DuoSynth(),
             osc1: {
                 type: 'sine',
@@ -52,17 +49,24 @@ const store = new Vuex.Store({
                 phaser: {
                     depth: 0,
                     time: 0,
+                    active: true,
+                    effectObject: new Tone.Phaser(),
                 },
                 delay: {
                     depth: 0,
                     time: 0,
+                    active: false,
+                    effectObject: new Tone.FeedbackDelay(),
                 },
                 reverb: {
                     depth: 0,
                     time: 0,
+                    active: false,
+                    effectObject: new Tone.Freeverb(),  
                 },
             }
-        }
+        },
+        effectsKeys: ['phaser', 'delay', 'reverb'],
     },
     mutations: {
         // OSC MUTATORS
@@ -190,7 +194,7 @@ const store = new Vuex.Store({
         // AMP MUTATORS
         setDistortionActive(state) {
             state.synth1.amp.distortion.active = true;
-            state.synth1.distortionObject.wet = 1;
+            state.synth1.distortionObject.wet.value = 1;
         },
         setBitcrusherActive(state) {
             state.synth1.amp.bitcrusher.active = true;
@@ -198,7 +202,7 @@ const store = new Vuex.Store({
         },
         setDistortionInactive(state) {
             state.synth1.amp.distortion.active = false;
-            state.synth1.distortionObject.wet = 0;
+            state.synth1.distortionObject.wet.value = 0;
         },
         setBitcrusherInactive(state) {
             state.synth1.amp.bitcrusher.active = false;
@@ -222,21 +226,31 @@ const store = new Vuex.Store({
             state.synth1.distortionObject.distortion = payload.level;
         },
         // EFFECTS SECTION
-        toggleEffectsType(state, payload) {
+        toggleEffectsType(state) {
             // refactor for dual synth use.
-            switch (payload.) {
-                //-12, -24, -48 and -96
-                case -12:
-                    state.synth1.filter.rolloff = -24;
-                    break;
-                case -24:
-                    state.synth1.filter.rolloff = -48;
-                    break;
-                case -48:
-                    state.synth1.filter.rolloff = -12
-                    break;
+            for(let i = 0; i < state.effectsKeys.length; i++){
+                let key = state.effectsKeys[i];
+                if(state.synth1.effects[key].active) {
+                    state.synth1.effects[key].active = false;
+                    state.synth1.effects[key].effectObject.wet.value = 0;
+                    let newKey = state.effectsKeys[i+1];
+                    state.synth1.effects[newKey].active = true;
+                    state.synth1.effects[key].effectObject.wet.value = 1;
+
+                }
             }
-            state.synth1.filterObject.rolloff = state.synth1.filter.rolloff;
+        },
+        setPhaserInactive(state) {
+            state.synth1.effects.phaser.effectObject.wet.value = 0;
+            state.synth1.effects.phaser.active = false;
+        },
+        setDelayInactive(state) {
+            state.synth1.effects.delay.effectObject.wet.value = 0;
+            state.synth1.effects.delay.active = false;
+        },
+        setReverbInactive(state) {
+            state.synth1.effects.reverb.effectObject.wet.value = 0;
+            state.synth1.effects.reverb.active = false;
         }
 
     },
