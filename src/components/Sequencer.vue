@@ -8,8 +8,10 @@
         <input v-bind:id="stepId(step.id)" class='step-button' type="checkbox" :checked='step.active' v-on:click='toggleStep(step.id)'>
     </div>
     </div>
-    <button id="start" v-on:click="start()">Start</button>
-    <button id="stop" v-on:click="stop()">Stop</button>
+    <div class='transport-controls'>
+        <button class='transport' id="start" v-on:click="start()"><img src="../assets/play-96.png"></button>
+        <button class='transport' id="stop" v-on:click="stop()"><img src="../assets/stop-96.png"></button>
+    </div>
 </div>
 </template>
 
@@ -85,6 +87,25 @@ export default {
 
 <style scoped>
 
+.transport {
+    border: none;
+    border-radius: 8px;
+    background-color: #fff;
+    padding: 4px 20px;
+    padding-top: 6px;
+    margin: 20px 10px;
+}
+
+.transport img {
+    height: 40px;
+}
+
+.transport-controls {
+    display: flex;
+    width: 1080px;
+    margin: auto;
+}
+
 .sequencer {
     display: flex;
     justify-content: center;
@@ -138,11 +159,11 @@ input[type="checkbox"]:checked {
 }
 
 #start {
-    margin: 20px;
+    /* margin: 20px; */
 }
 
 #stop {
-    margin: 20px;
+    /* margin: 20px; */
 }
 
 </style>

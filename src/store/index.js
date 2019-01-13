@@ -254,18 +254,31 @@ const store = new Vuex.Store({
         setEffectDepth(state, payload) {
             switch(state.synth1.effects.active) {
                 case 'phaser': {
-                    // convert value to octave Amount
-                    const inc = 12 / 264;
-                    let octave = Math.round(inc * payload.value);
-                    state.synth1.effects.phaser.effectObject.octaves = octave;
-                    state.synth1.effects.phaser.depth = octave;
+                    if(payload.value > 1) {
+                        state.synth1.effects.phaser.effectObject.wet.value = 1;
+                        // convert value to octave Amount
+                        const inc = 12 / 264;
+                        let octave = Math.round(inc * payload.value);
+                        state.synth1.effects.phaser.effectObject.octaves = octave;
+                        state.synth1.effects.phaser.depth = octave;
+                    } else {
+                        state.synth1.effects.phaser.effectObject.wet.value = 0;
+                        state.synth1.effects.phaser.effectObject.octaves = 0;
+                        state.synth1.effects.phaser.depth = 0;
+                    }
                     break;
                 }
                 case 'delay': {
-                    //Convert value to feedback amount (0 - 1)
-                    let feedback = (1 / 264) * payload.value;   
-                    state.synth1.effects.delay.effectObject.feedback.value = feedback;
-                    state.synth1.effects.delay.depth = feedback;
+                    // ADD OFF SETTING ON ELSE 
+                    if(payload.value > 1) { 
+                        state.synth1.effects.delay.effectObject.wet.value = 1;
+                        //Convert value to feedback amount (0 - 1)
+                        let feedback = (1 / 264) * payload.value;   
+                        state.synth1.effects.delay.effectObject.feedback.value = feedback;
+                        state.synth1.effects.delay.depth = feedback;
+                    } else {
+
+                    }
                     break;
                 }
                 case 'reverb':  {
