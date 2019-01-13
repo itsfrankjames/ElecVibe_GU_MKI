@@ -232,7 +232,6 @@ const store = new Vuex.Store({
         // EFFECTS SECTION
         toggleEffectsType(state) {
             // refactor for dual synth use.
-
             switch(state.synth1.effects.active) {
                 case 'phaser':
                     state.synth1.effects.phaser.effectObject.wet.value = 0;
@@ -241,28 +240,84 @@ const store = new Vuex.Store({
                     break;
                 case 'delay':
                     state.synth1.effects.delay.effectObject.wet.value = 0;
-                    state.synth1.effects.reverb.effectObject.wet.value = 1;
-                    state.synth1.effects.active = 'reverb';
-                    break;
-                case 'reverb':  
-                    state.synth1.effects.reverb.effectObject.wet.value = 0;
                     state.synth1.effects.phaser.effectObject.wet.value = 1;
                     state.synth1.effects.active = 'phaser';
                     break;
+                // case 'reverb':  
+                //     state.synth1.effects.reverb.effectObject.wet.value = 0;
+                //     state.synth1.effects.phaser.effectObject.wet.value = 1;
+                //     state.synth1.effects.active = 'phaser';
+                //     break;
             }
 
         },
+        setEffectDepth(state, payload) {
+            switch(state.synth1.effects.active) {
+                case 'phaser': {
+                    // convert value to octave Amount
+                    const inc = 12 / 264;
+                    let octave = Math.round(inc * payload.value);
+                    state.synth1.effects.phaser.effectObject.octaves = octave;
+                    state.synth1.effects.phaser.depth = octave;
+                    break;
+                }
+                case 'delay': {
+                    //Convert value to feedback amount (0 - 1)
+                    let feedback = (1 / 264) * payload.value;   
+                    state.synth1.effects.delay.effectObject.feedback.value = feedback;
+                    state.synth1.effects.delay.depth = feedback;
+                    break;
+                }
+                case 'reverb':  {
+                    //Convert value to reverb Dampening Frequency; :/
+                    const y = Math.pow(1 + payload.value, 2) / Math.pow(1 + 265, 2);
+                    // 20hz ~ 12000hz is the bounds of the filter.
+                    const reverbFilterCutoff = y * 16000 + 20;
+                    state.synth1.effects.reverb.effectObject.dampening.value = reverbFilterCutoff;
+                    state.synth1.effects.reverb.depth = reverbFilterCutoff;
+                    break;
+                }
+            }
+        },
+        setEffectTime(state, payload) {
+            switch(state.synth1.effects.active) {
+                case 'phaser': {
+                    // to frequency 
+                    // 20hz ~ 12000hz is the bounds of the filter.
+                    // const reverseValue = (payload.value * -1) + 264;
+                    const max_bounds = 69696;
+                    const reverbFilterCutoff = (30 / max_bounds) * Math.pow(payload.value, 2);
+                    state.synth1.effects.phaser.effectObject.frequency.value = reverbFilterCutoff;
+                    state.synth1.effects.phaser.time = reverbFilterCutoff;
+                    break;
+                }
+                case 'delay': {
+                    //
+                    let delayTime = (1 / 264) * payload.value;  
+                    state.synth1.effects.delay.effectObject.delayTime.value = delayTime;
+                    state.synth1.effects.delay.time = delayTime ;
+                    break;
+                }
+                case 'reverb':  {
+                    // Convert value to reverb (0 - 1)
+                    let roomSize = (1 / 264) * payload.value;  
+                    state.synth1.effects.reverb.effectObject.roomSize.value = roomSize;
+                    state.synth1.effects.reverb.time = roomSize;
+                    break;
+                }
+            }
+        },
+        setReverbWetHalf(state) {
+            state.synth1.effects.reverb.effectObject.wet.value = 0.6;
+        },
         setPhaserInactive(state) {
             state.synth1.effects.phaser.effectObject.wet.value = 0;
-            state.synth1.effects.phaser.active = false;
         },
         setDelayInactive(state) {
             state.synth1.effects.delay.effectObject.wet.value = 0;
-            state.synth1.effects.delay.active = false;
         },
         setReverbInactive(state) {
             state.synth1.effects.reverb.effectObject.wet.value = 0;
-            state.synth1.effects.reverb.active = false;
         }
 
     },

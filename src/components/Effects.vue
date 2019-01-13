@@ -2,7 +2,7 @@
     <div class='effects'>
         <h2>Effects</h2>
         <div class="dials">
-        <Knob v-for="dial in controls" :key="dial.id" :label="dial.name" :id="dial.id" :startPos="dial.value" color='#FA9C34'></Knob>
+        <Knob v-for="dial in controls" :key="dial.id" :label="dial.name" :id="dial.id" :startPos="dial.value" :onRelease='dial.method' color='#FA9C34'></Knob>
         </div>
         <div class='effectToggler'>
         <Toggle :options="effectType" control='Type Select' :onToggle='toggleEffect'></Toggle>
@@ -18,15 +18,18 @@ export default {
   name: 'Oscillator',
   data() {
       return {
+          activeEffect: this.$store.state.synth1.effects.active,
           controls: [ {
               value: -132,
               name: 'Depth',
               id: 0,
+              method: this.setEffectDepth,
           },
           {
               value: 0,
               name: 'Time',
               id: 1,
+              method: this.setEffectTime,
           },
           ],
           effectType: [
@@ -40,11 +43,11 @@ export default {
             active: this.$store.state.synth1.effects.active === 'delay',
             id: 'delay',
             },
-                   {
-            label: 'Reverb',
-            active: this.$store.state.synth1.effects.active === 'reverb',
-            id: 'reverb',
-            }
+            //        {
+            // label: 'Reverb',
+            // active: this.$store.state.synth1.effects.active === 'reverb',
+            // id: 'reverb',
+            // }
           ],
       }
   },
@@ -55,10 +58,27 @@ export default {
   methods: {
       toggleEffect(){
           this.$store.commit('toggleEffectsType');
+        //   switch(this.activeEffect) {
+        //       case 'phaser':
+        //       case  'delay':
+        //       case  'reverb':
+        //   }
+      },
+      setEffectDepth(value){
+          value += 132;
+          this.$store.commit({
+              type: 'setEffectDepth',
+              value,
+            });
+      },
+      setEffectTime(value) {
+          value += 132;
+          this.$store.commit({
+              type: 'setEffectTime',
+              value,
+            });
       }
-
   }
-
 }
 </script>
 

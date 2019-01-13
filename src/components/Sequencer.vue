@@ -35,8 +35,8 @@ export default {
           return {
               id: id,
               note: id%12,
-            //   active: id % 2 == 0 ? true : false,
-              active: true,
+              active: id % 6 == 0 ? true : false,
+            //   active: true,
           }
       },
       getNote(key){

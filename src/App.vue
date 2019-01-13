@@ -55,7 +55,6 @@ export default {
       this.effects.bitcrusher,
       this.effects.phaser,
       this.effects.delay,
-      this.effects.reverb, 
       Tone.Master);
 
     this.$store.commit('setBitcrusherInactive');
