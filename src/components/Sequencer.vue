@@ -1,16 +1,24 @@
 <template>
 <div>
     <div class='sequencer'>
-    <div class='step-container' v-for="step in steps" :key="step.id">
+    <div class='step-container' v-for="step in steps" :key="step.id" v-bind:style="{ 'background-color': step.colour }">
         <button v-on:click="incrementNote(step.id)" class='up-note'>+</button>
         <p class='note'>{{getNote(step.note)}}<p/>
          <button v-on:click="decramentNote(step.id)" class='down-note'>-</button>
         <input v-bind:id="stepId(step.id)" class='step-button' type="checkbox" :checked='step.active' v-on:click='toggleStep(step.id)'>
     </div>
     </div>
+    <div class='global-controls'>
     <div class='transport-controls'>
         <button class='transport' id="start" v-on:click="start()"><img src="../assets/play-96.png"></button>
         <button class='transport' id="stop" v-on:click="stop()"><img src="../assets/stop-96.png"></button>
+    </div>
+    <div class='bpm-controls'>
+        <h2>BPM</h2>
+        <button class='bpm-control' v-on:click='decrementBPM'>-</button>
+        <p>{{ bpm }}</p>
+        <button class='bpm-control' v-on:click='incrementBPM'>+</button>
+    </div>
     </div>
 </div>
 </template>
@@ -25,9 +33,10 @@ export default {
   data() {
       return {
           steps: [],
-          notes: ['B3', 'F#4', 'B3', 'F#4', 'B3', 'F#4', 'B3', 'A3', 'D3', 'F#4', 'D3', 'F#4'],
-          index: 0, 
-      }
+          notes: ['A2', 'A#2', 'B2', 'C3', 'C#3', 'D3', 'D#3', 'E3', 'F3', 'F#3', 'G3', 'G#3', 'A3', 'A#3', 'B3', 'C4', 'C#4', 'D4', 'D#4', 'E4', 'F4', 'F#4', 'G4', 'G#4', 'A4', 'A#4', 'B4', 'C5'],
+          index: 0,
+          bpm: 100,   
+    }
   },
   methods: {
       stepId(id) {
@@ -36,8 +45,9 @@ export default {
       createStep(id) {
           return {
               id: id,
-              note: id%12,
-              active: id % 6 == 0 ? true : false,
+              note: id % 12,
+              active: (id - 1) % 2 == 0 ? true : false,
+              colour: 'rgba(128, 128, 128, 1)',
             //   active: true,
           }
       },
@@ -55,9 +65,22 @@ export default {
       toggleStep(id){
           this.steps[id-1].active = !this.steps[id-1].active;
       },
+      incrementBPM() {
+        this.bpm = this.bpm + 1;
+        Tone.Transport.bpm.value = this.bpm
+      },
+      decrementBPM(){
+        this.bpm = this.bpm - 1;
+        Tone.Transport.bpm.value = this.bpm;
+      },
       sequence() {
             let step = this.index % 16;
+            let lastStep = step - 1 >= 0 ? step - 1 : 15;
             let note = this.notes[this.steps[step].note];
+     
+            this.steps[lastStep].colour = 'rgba(128, 128, 128, 1)';
+            this.steps[step].colour = 'rgba(86, 98, 37, 1)';
+
             if(this.steps[step].active) {
                 this.synth.triggerAttackRelease(note, '16n');
             }
@@ -79,7 +102,7 @@ export default {
       
   },
   mounted() {
-
+        Tone.Transport.bpm.value = this.bpm;
         Tone.Transport.scheduleRepeat(this.sequence, '16n');
   }
 }
@@ -102,10 +125,43 @@ export default {
 
 .transport-controls {
     display: flex;
-    width: 1080px;
-    margin: auto;
+    justify-content: space-between;
+    width: 220px;
+
 }
 
+.global-controls {
+    display: flex;
+    width: 1080px;
+    margin: auto;
+    justify-content: space-between;
+}
+
+.bpm-controls {
+    display: inline-flex;
+    width: 340px;
+    justify-content: space-evenly;
+    margin: 20px;
+}
+
+.bpm-controls p {
+    color: #fff;
+    font-size: 24px;
+    margin: 20px 0px 0px;
+}
+
+.bpm-controls h2 {
+    color: #fff
+}
+
+.bpm-controls button {
+    border: none;
+    border-radius: 8px;
+    background-color: #fff;
+    padding: 6px 20px;
+    width: 64px;
+    font-size: 26px;
+}
 .sequencer {
     display: flex;
     justify-content: center;
@@ -122,7 +178,6 @@ export default {
     padding: 40px 12px 12px;
     margin: 6px;
     border-radius: 4px;
-    background-color: grey;
     display: flex;
     flex-direction: column;
 }
